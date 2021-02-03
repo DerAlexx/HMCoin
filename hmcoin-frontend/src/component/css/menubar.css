@@ -1,0 +1,8 @@
+.title {
+    position: absolute;
+    left: 30px;
+    top: 10px;
+    color: #ff5a5a;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 40px;
+}
