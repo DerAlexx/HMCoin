@@ -3,11 +3,23 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { Route, BrowserRouter as Router } from 'react-router-dom'
+
+import {createBrowserHistory} from 'history';
+
+const browserHistory = createBrowserHistory();
+
+const router = (
+  <Router history={browserHistory}>
+    <div>
+      <Route exact path="/" component={App}  /> 
+    </div>
+  </Router>
+)
+
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  router,
   document.getElementById('root')
 );
 
