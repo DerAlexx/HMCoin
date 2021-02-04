@@ -2,10 +2,10 @@
 Blockchainclass.
 '''
 
-from .transaction import Transactions
-from .block import Block
+from .transaction import TransactionObejct
+from .block import BlockObejct
 
-class BlockChain:
+class BlockChainObject:
     
     def __init__(self):
         first_Block = Block.generate_genesis_block()
@@ -18,8 +18,6 @@ class BlockChain:
         return new_block
 
     def add_transactions(self, transaction):
-        # todo: check if transaction-quantity is positive -> return error
-
         self.open_transactions.append(transaction)
 
 

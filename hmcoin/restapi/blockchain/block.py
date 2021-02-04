@@ -1,10 +1,11 @@
 '''
 Blockclass.
 '''
+
 import hashlib
 from time import time
 
-class Block:
+class BlockObejct:
     
     def __init__(self, index, proof, prev_hash):
         self.index = index
