@@ -20,4 +20,24 @@ Das Backend ist der Broker zwischen der Blockchain und dem Frontend. Mittels RES
 
 Die Blockchain ist eine minimalistische Implementierung mit den wesentlichen Komponenten die für eine Kryptowährung notwendig sind. Entwickelt ebenfalls in Python. Zur Vereinfachung wurde kein dezentraler Ansatz gewählt, sondern sätmliche Informationen und Transaktionen laufen an einem Punkt zusammen. 
 
+## Weitere Informationen
 
+Weitere Informationen stehen im Wiki des Projekts.
+
+#### Projekt starten: 
+
+```
+https://github.com/DerAlexx/HMCoin/wiki/Start-des-Servers
+```
+
+#### Projekt bauen: 
+
+```
+https://github.com/DerAlexx/HMCoin/wiki/Bauen-des-Projekts
+```
+
+#### Projektstruktur: 
+
+```
+https://github.com/DerAlexx/HMCoin/wiki/Projektstruktur
+```
