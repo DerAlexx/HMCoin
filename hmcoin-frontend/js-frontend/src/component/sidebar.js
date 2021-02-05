@@ -30,7 +30,7 @@ export default class FSidebar extends React.Component {
             </div>
             <Sidebar
               sidebar={
-                <div style={{paddingTop:'25px'}}>
+                <div style={{paddingTop:'25px', zIndex:20000}}>
                     <h2 style={{color:'#171a21'}}>HMCoin</h2>
                     <hr></hr>
                     <ul style={{color:'gray', listStyle: "none", paddingLeft:0}}>

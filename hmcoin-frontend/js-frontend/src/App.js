@@ -10,7 +10,8 @@ function App() {
         <Menubar></Menubar>
         <img class="bigLogo" alt="Bitcoin" src={bigimage} style={{opacity: 0.90}}></img>
         <hr></hr>
-        <div style={{marginLeft: '10%', width:'80%', top: '80%', position: 'absolute'}}>
+        <br></br>
+        <div style={{marginLeft: '10%', width:'80%', top: '80%', position: 'absolute', zIndex:-20}}>
           <h2 style={{color:'#ff5a5a', fontSize: '46px'}}>HMCoin - Cryptocurrency</h2>
           <br></br>
           <p>
@@ -37,7 +38,7 @@ function App() {
             <div class="card" style={{width: "14rem", borderColor: 'gray', marginLeft: '20px', marginRight: '20px'}}>
               <div class="card-body">
                 <h5 class="card-title">Send some coins.</h5>
-                <a href="#" class="card-link" style={{color:'#ff5a5a'}}>» Here</a>
+                <a href="/send" class="card-link" style={{color:'#ff5a5a'}}>» Here</a>
               </div>
             </div>
             <div class="card" style={{width: "14rem", borderColor: 'gray', marginLeft: '20px', marginRight: '20px'}}>
