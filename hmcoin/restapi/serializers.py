@@ -15,10 +15,15 @@ class BlockSerializer(serializers.ModelSerializer):
 
 
 class TransactionSerializer(serializers.ModelSerializer):
-    block = BlockSerializer()
-    open_transactions = BlockchainSerializer()
+    #block = BlockSerializer()
+    #open_transactions = BlockchainSerializer()
     
     class Meta:
         model = Transaction
         #fields = ['sender', 'recipient', 'quantity', 'reward', 'block', 'open_transactions']
         fields = ['sender', 'recipient', 'quantity']
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Addressbook
+        fields = ['address']

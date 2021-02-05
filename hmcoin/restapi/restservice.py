@@ -1,11 +1,25 @@
-from .blockchain.block import BlockObejct
-from .blockchain.blockchain import BlockChainObject
-from .blockchain.transaction import TransactionObejct
 from .models import *
 from .serializers import *
 from rest_framework import response, status
-from django.core.serializers import deserialize
+from rest_framework.renderers import JSONRenderer
+import json
 
+import hashlib
+from time import time
+
+TRANSACTION_IN_A_BLOCK = 8
+
+def get_hash(block, transactions):
+    index = block.index
+    proof = block.proof
+    prev_hash = block.previous_hash
+    timestamp = block.timestamp
+    transactions = Transaction.objects.filter(block__index=index)
+    serial_trans = TransactionSerializer(transactions, many=True)
+
+    
+    block_to_hash = "{}{}{}{}{}".format(index, proof, prev_hash, timestamp, serial_trans.data.__str__)
+    return hashlib.sha256(block_to_hash.encode()).hexdigest()
 
 
 def start_blockchain(request):
@@ -17,9 +31,15 @@ def start_blockchain(request):
     new_blockchain = Blockchain(id=1)
     new_blockchain.save()
 
+    # create genesis-block and connect with BC
+    time = time.time()
+    genesis = Block(index=0, proof=0, previous_hash="0", timestamp = time, blockchain=new_blockchain)
+    genesis.save()
+
+
     serial = BlockchainSerializer(new_blockchain)
-    
-    return response.Response(serial.data)
+    content = JSONRenderer().render(serial.data)
+    return response.Response(content)
 
 
 def get_blockchain(request):
@@ -28,37 +48,43 @@ def get_blockchain(request):
     if blockchain.count() > 0:
         all_trans = Transaction.objects.all()
 
-        serial = TransactionSerializer(all_trans)
-        return response.Response(serial.data)
+        serial = TransactionSerializer(all_trans, many=True)
+        content = JSONRenderer().render(serial.data)
+        return response.Response(content)
         
     else:
         content = {'info': ' no blockchain in DB'}
-        return response.Response(content, status=status.HTTP_404_NOT_FOUND)
+        return response.Response(content, status=status.HTTP_204_NO_CONTENT)
 
-
-
+'''
+erwartet: {
+    'sender' : string
+    'recipient': string
+    'quantity': int
+}
+'''
 def new_transaction(request):
-    data = request.data
+    data = request.body
+    data_dict = json.loads(data)
 
-    #deserialize data, get all transaction values
-    sender = None
-    recipient = None
-    quantity = None
+    sender = data_dict["sender"]
+    recipient = data_dict["recipient"]
+    quantity = data_dict["quantity"]
 
     # check if sender and recipient are in adressbook
     if quantity < 0:
         content = {'info': 'quantity less than zero'}
-        return response.Response(content, status=status.HTTP_404_NOT_FOUND)
+        return response.Response(content, status=status.HTTP_204_NO_CONTENT)
 
     check = Addressbook.objects.filter(address=sender)
     if check.count() <= 0:
         content = {'info': 'sender wrong'}
-        return response.Response(content, status=status.HTTP_404_NOT_FOUND)
+        return response.Response(content, status=status.HTTP_204_NO_CONTENT)
 
     check = Addressbook.objects.filter(address=recipient)
     if check.count() <= 0:
         content = {'info': 'recipient wrong'}
-        return response.Response(content, status=status.HTTP_404_NOT_FOUND)
+        return response.Response(content, status=status.HTTP_204_NO_CONTENT)
 
     bc = Blockchain.objects.filter(pk=1)
 
@@ -68,56 +94,155 @@ def new_transaction(request):
         new_trans.save()
 
         serial = TransactionSerializer(new_trans)
-        return response.Response(serial.data)
+        content = JSONRenderer().render(serial.data)
+        return response.Response(content)
 
     else:
         content = {'info': 'no Blockchain started'}
-        return response.Response(content, status=status.HTTP_404_NOT_FOUND)
+        return response.Response(content, status=status.HTTP_204_NO_CONTENT)
 
     
+def get_all_finished_transactions(request):
+    fin_trans = Transaction.objects.filter(open_transactions=None)
+
+    if fin_trans.count() > 0:
+        serial = TransactionSerializer(fin_trans, many=True)
+        content = JSONRenderer().render(serial.data)
+        return response.Response(content)
+    else:
+        content = {'info': 'no transactions found'}
+        return response.Response(content, status=status.HTTP_204_NO_CONTENT)
 
 
 
 def get_open_transactions(request):
-    all_open_trans = Transaction.objects.exclude(open_transactions=None).filter(open_transactions__isnull=False)
-    serial = TransactionSerializer(all_open_trans)
+    all_open_trans = Transaction.objects.exclude(open_transactions=None)
+    serial = TransactionSerializer(all_open_trans, many=True)
+    content = JSONRenderer().render(serial.data)
 
-    return response.Response(serial.data)
+    return response.Response(content)
 
 
 def mining(request):
-    pass
+    # get one transaction from open_transactions
+    open_trans = Transaction.objects.exclude(open_transactions=None).first()
+    
+    if open_trans == None:
+        content = {'info': 'no open Transactions left to mine'}
+        return response.Response(content, status=status.HTTP_204_NO_CONTENT)
+    else:
+        serial = TransactionSerializer(open_trans)
+        content = JSONRenderer().render(serial.data)
+        return response.Response(content)
 
+'''
+erwartet: {
+    'block_index' : index,
+}
+'''
 def get_block(request):
-    data = request.data
+    data = request.body
+    data_dict = json.loads(data)
 
     #deserialize data, get id value
-    block_id = None
+    block_idx = data_dict["block_index"]
 
-    block = Block.objects.filter(pk=block_id)
+    block = Block.objects.filter(index=block_idx)
 
     if block.count() > 0:
         serial = BlockSerializer(block)
-        return response.Response(serial.data)
+        content = JSONRenderer().render(serial.data)
+        return response.Response(content)
     else:
-        content = {'info': 'nothing'}
-        return response.Response(content, status=status.HTTP_404_NOT_FOUND)
+        content = {'info': 'no block found'}
+        return response.Response(content, status=status.HTTP_204_NO_CONTENT)
 
 
+'''
+erwartet: {
+    'sender' : string,
+    'recipient': string,
+    'quantity': int,
+    'reward': int,
+    'proof': int
+}
+'''
 def verify(request):
-    pass
+    data = request.body
+    data_dict = json.loads(data)
+    # get transaction-data and found proof
+    sender = data_dict["sender"]
+    recipient = data_dict["recipient"]
+    quantity = data_dict["quantity"]
+    reward = data_dict["reward"]
+    proof = data_dict["proof"]
+
+    # check stuff. ggf trans_to_verify und last block nach hier oben ziehen
+    valid = True
+    
+    if (valid):
+        trans_to_verify = Transaction.objects.filter(sender=sender, recipient=recipient, quantity=quantity, reward=reward)
+        if trans_to_verify.count() > 0:
+            last_block = Block.objects.order_by('index').first()
+            trans = trans_to_verify.first()
+
+            # get nr of transactions in block
+            last_block_transactions = Transaction.objects.filter(block__index=last_block.index)
+            count_trans_in_block = last_block_transactions.count()
+            if last_block.index != 0 and (count_trans_in_block != None or count_trans_in_block < TRANSACTION_IN_A_BLOCK):
+                #add transaction to block
+                trans.block = last_block
+                trans.open_transactions = None
+                trans.save()
+
+                content = {'info': 'ok'}
+                return response.Response(content)
+
+            else:
+                #create block, as only genesis is there or transaction_max is reached
+                #define hash func above
+                prev_hash = get_hash(last_block, last_block_transactions) 
+                new_block = Block(index=(last_block.index + 1), proof=proof, previous_hash=prev_hash, timestamp=time.time(), blockchain=last_block.blockchain)
+                new_block.save()
+
+                trans.block = new_block
+                trans.open_transactions = None
+                trans.save()
+
+                content = {'info': 'ok'}
+                return response.Response(content)
+
+        else:
+            content = {'info': 'no transaction found'}
+            return response.Response(content, status=status.HTTP_204_NO_CONTENT)
+    else:
+        content = {'info': 'was not valid'}
+        return response.Response(content, status=status.HTTP_204_NO_CONTENT)
 
 
-def addAddress(request):
-    data = request.data
+'''
+erwartet: {
+    'address': string
+}
+'''
+def add_address(request):
+    data = request.body
+    data_dict = json.loads(data)
 
     # get address from data
-    address_from_data = None
+    address_from_data = data_dict["address"]
 
     adr = Addressbook(address=address_from_data)
     adr.save()
 
-    content = {"ok":"ok"}
+    content = {"info":"Address added"}
     return response.Response(content)
 
+
+def get_addresses(request):
+    addresses = Addressbook.objects.all()
+    serial = AddressSerializer(addresses, many=True)
+    content = JSONRenderer().render(serial.data)
+
+    return response.Response(content)
 
