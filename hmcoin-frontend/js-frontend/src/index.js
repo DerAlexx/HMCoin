@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import Transactions from './Transactions';
+import CoinTransaction from './CoinTransaction';
 import reportWebVitals from './reportWebVitals';
 import { Route, BrowserRouter as Router } from 'react-router-dom'
 
@@ -12,7 +14,9 @@ const browserHistory = createBrowserHistory();
 const router = (
   <Router history={browserHistory}>
     <div>
-      <Route exact path="/" component={App}  /> 
+      <Route exact path="/" component={App}  />
+      <Route exact path="/transactions" component={Transactions}  /> 
+      <Route exact path="/send" component={CoinTransaction}  /> 
     </div>
   </Router>
 )

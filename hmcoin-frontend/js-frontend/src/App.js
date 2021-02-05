@@ -43,7 +43,7 @@ function App() {
             <div class="card" style={{width: "14rem", borderColor: 'gray', marginLeft: '20px', marginRight: '20px'}}>
               <div class="card-body">
                 <h5 class="card-title">All transactions.</h5>
-                <a href="#" class="card-link" style={{color:'#ff5a5a'}}>» Here</a>
+                <a href="/transactions" class="card-link" style={{color:'#ff5a5a'}}>» Here</a>
               </div>
             </div>
           </p>

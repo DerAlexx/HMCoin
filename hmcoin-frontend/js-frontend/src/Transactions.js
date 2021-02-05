@@ -2,18 +2,17 @@
 import 'bootstrap/dist/css/bootstrap.css';
 import React from "react";
 
-//Stylesheets
-import './css/menubar.css'
+import Menubar from './component/menubar';
 
 export default class Transactions extends React.Component {
  
     render() {
       return (       
-          <div>
+          <div className="App">
               <Menubar></Menubar>
               <div style={{marginLeft: '10%', width:'80%', top: '120px', position: 'absolute'}}>
-
-
+                <h2 style={{color:'gray'}}>Transactions</h2>
+                <hr></hr>
               </div>
           </div>
       )
