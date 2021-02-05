@@ -1,8 +1,10 @@
 version: "3"
 services: 
     blockchain:
-        context: .
-        dockerfile: dockerfile
+        build:
+            context: .
+            dockerfile: hmcoin/dockerfile
     frontend:
-        context: .
-        dockerfile: dockerfile
+        build:
+            context: .
+            dockerfile: hmcoin-frontend/dockerfile
