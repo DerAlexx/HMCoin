@@ -36,3 +36,11 @@
     transform: rotate(360deg);
   }
 }
+
+.bigLogo {
+  width: 100%;
+  position: absolute;
+  top: -250px;
+  left: 0px;
+  z-index: -100;
+}
