@@ -35,7 +35,7 @@ def start_blockchain(request):
         new_blockchain.save()
 
         # create genesis-block and connect with BC
-        timest = time.time()
+        timest = time()
         genesis = Block(index=0, proof=0, previous_hash="0", timestamp=timest, blockchain=new_blockchain)
         genesis.save()
 
