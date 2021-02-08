@@ -15,7 +15,7 @@ from .restservice import new_transaction
 urlpatterns = [ 
     path('done-transactions/', get_all_finished_transactions, name="done-transactions"),
     path('open-transactions/', get_open_transactions, name="open-transactions"),
-    path('open-transactions/', new_transaction, name="open-transactions"),
+    path('new-transactions/', new_transaction, name="new-transactions"),
     path('get-address/', get_addresses, name="get-address"),
     path('new-address/', add_address, name="new-address"),
     path('mining/', mining, name="mining"),
