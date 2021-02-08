@@ -1,16 +1,14 @@
-from .models import *
-from .serializers import *
-from rest_framework import response, status
-from rest_framework.renderers import JSONRenderer
-
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from rest_framework.renderers import JSONRenderer
-from django.http import HttpResponse, JsonResponse
-
 import json
-
 import hashlib
 from time import time
+
+from rest_framework import status
+from rest_framework.renderers import JSONRenderer
+from rest_framework.decorators import api_view
+from django.http import JsonResponse
+
+from .models import *
+from .serializers import *
 
 TRANSACTION_IN_A_BLOCK = 8
 
@@ -22,25 +20,23 @@ def get_hash(block, transactions):
     transactions = Transaction.objects.filter(block__index=index)
     serial_trans = TransactionSerializer(transactions, many=True)
 
-    
     block_to_hash = "{}{}{}{}{}".format(index, proof, prev_hash, timestamp, serial_trans.data.__str__)
     return hashlib.sha256(block_to_hash.encode()).hexdigest()
 
 @api_view(['POST'])
 def start_blockchain(request):
     try:
-
         blockchain = Blockchain.objects.filter(pk=1)
 
         if blockchain.count() > 0:
             blockchain.delete()
-        
+
         new_blockchain = Blockchain(id=1)
         new_blockchain.save()
 
         # create genesis-block and connect with BC
-        time = time.time()
-        genesis = Block(index=0, proof=0, previous_hash="0", timestamp = time, blockchain=new_blockchain)
+        timest = time.time()
+        genesis = Block(index=0, proof=0, previous_hash="0", timestamp=timest, blockchain=new_blockchain)
         genesis.save()
 
 
@@ -51,7 +47,7 @@ def start_blockchain(request):
         ex = str(error)
         content = {'info': ex}
         return JsonResponse(content, status=500)
-        
+
 
 @api_view(['GET'])
 def get_blockchain(request):
@@ -64,10 +60,9 @@ def get_blockchain(request):
             serial = TransactionSerializer(all_trans, many=True)
             content = JSONRenderer().render(serial.data)
             return JsonResponse(content, status=200)
-            
-        else:
-            content = {'info': ' no blockchain in DB'}
-            return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
+
+        content = {'info': ' no blockchain in DB'}
+        return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
     except Exception as error:
         ex = str(error)
         content = {'info': ex}
@@ -117,9 +112,8 @@ def new_transaction(request):
             content = JSONRenderer().render(serial.data)
             return JsonResponse(content, status=200)
 
-        else:
-            content = {'info': 'no Blockchain started'}
-            return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
+        content = {'info': 'no Blockchain started'}
+        return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
     except Exception as error:
         ex = str(error)
         content = {'info': ex}
@@ -134,9 +128,9 @@ def get_all_finished_transactions(request):
             serial = TransactionSerializer(fin_trans, many=True)
             content = JSONRenderer().render(serial.data)
             return JsonResponse(content, status=200)
-        else:
-            content = {'info': 'no transactions found'}
-            return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
+
+        content = {'info': 'no transactions found'}
+        return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
     except Exception as error:
         print(error)
 
@@ -159,14 +153,14 @@ def mining(request):
     try:
         # get one transaction from open_transactions
         open_trans = Transaction.objects.exclude(open_transactions=None).first()
-        
+
         if open_trans == None:
             content = {'info': 'no open Transactions left to mine'}
             return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
-        else:
-            serial = TransactionSerializer(open_trans)
-            content = JSONRenderer().render(serial.data)
-            return JsonResponse(content, status=200)
+
+        serial = TransactionSerializer(open_trans)
+        content = JSONRenderer().render(serial.data)
+        return JsonResponse(content, status=200)
     except Exception as error:
         ex = str(error)
         content = {'info': ex}
@@ -193,9 +187,9 @@ def get_block(request):
             serial = BlockSerializer(block)
             content = JSONRenderer().render(serial.data)
             return JsonResponse(content, status=200)
-        else:
-            content = {'info': 'no block found'}
-            return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
+
+        content = {'info': 'no block found'}
+        return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
     except Exception as error:
         ex = str(error)
         content = {'info': ex}
@@ -225,8 +219,8 @@ def verify(request):
 
         # check stuff. ggf trans_to_verify und last block nach hier oben ziehen
         valid = True
-        
-        if (valid):
+
+        if valid:
             trans_to_verify = Transaction.objects.filter(sender=sender, recipient=recipient, quantity=quantity, reward=reward)
             if trans_to_verify.count() > 0:
                 last_block = Block.objects.order_by('index').first()
@@ -235,7 +229,7 @@ def verify(request):
                 # get nr of transactions in block
                 last_block_transactions = Transaction.objects.filter(block__index=last_block.index)
                 count_trans_in_block = last_block_transactions.count()
-                if last_block.index != 0 and (count_trans_in_block != None or count_trans_in_block < TRANSACTION_IN_A_BLOCK):
+                if last_block.index != 0 and (count_trans_in_block is not None or count_trans_in_block < TRANSACTION_IN_A_BLOCK):
                     #add transaction to block
                     trans.block = last_block
                     trans.open_transactions = None
@@ -244,19 +238,18 @@ def verify(request):
                     content = {'info': 'ok'}
                     return JsonResponse(content, status=200)
 
-                else:
-                    #create block, as only genesis is there or transaction_max is reached
-                    #define hash func above
-                    prev_hash = get_hash(last_block, last_block_transactions) 
-                    new_block = Block(index=(last_block.index + 1), proof=proof, previous_hash=prev_hash, timestamp=time.time(), blockchain=last_block.blockchain)
-                    new_block.save()
+                #create block, as only genesis is there or transaction_max is reached
+                #define hash func above
+                prev_hash = get_hash(last_block, last_block_transactions)
+                new_block = Block(index=(last_block.index + 1), proof=proof, previous_hash=prev_hash, timestamp=time.time(), blockchain=last_block.blockchain)
+                new_block.save()
 
-                    trans.block = new_block
-                    trans.open_transactions = None
-                    trans.save()
+                trans.block = new_block
+                trans.open_transactions = None
+                trans.save()
 
-                    content = {'info': 'ok'}
-                    return JsonResponse(content, status=200)
+                content = {'info': 'ok'}
+                return JsonResponse(content, status=200)
 
             else:
                 content = {'info': 'no transaction found'}
@@ -307,4 +300,3 @@ def get_addresses(request):
         ex = str(error)
         content = {'info': ex}
         return JsonResponse(content, status=500)
-
