@@ -35,3 +35,5 @@ class Transaction(models.Model):
 class Addressbook(models.Model):
     address = models.CharField(max_length=250)
 
+    def __str__(self):
+        return str(self.address)

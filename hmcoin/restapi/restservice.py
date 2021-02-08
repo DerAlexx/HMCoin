@@ -293,10 +293,9 @@ def get_addresses(request):
     try:
         addresses = Addressbook.objects.all()
         serial = AddressSerializer(addresses, many=True)
-        content = JSONRenderer().render(serial.data)
-
-        return JsonResponse(content, status=200)
+        return JsonResponse(serial.data, status=200, safe=False)
     except Exception as error:
         ex = str(error)
+        print(ex)
         content = {'info': ex}
         return JsonResponse(content, status=500)
