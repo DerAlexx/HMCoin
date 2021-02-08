@@ -263,10 +263,12 @@ def add_address(request):
         # get address from data
         address_from_data = data_dict["address"]
 
-        adr = Addressbook(address=address_from_data)
+        hashed_addr = hashlib.sha256( (address_from_data + str(time())).encode() ).hexdigest()
+
+        adr = Addressbook(address=hashed_addr)
         adr.save()
 
-        content = {"info":"Address added"}
+        content = {"info":"Address added", "address": hashed_addr}
         return JsonResponse(content, status=200)
     except Exception as error:
         ex = str(error)
