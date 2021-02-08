@@ -39,10 +39,8 @@ def start_blockchain(request):
         genesis = Block(index=0, proof=0, previous_hash="0", timestamp=timest, blockchain=new_blockchain)
         genesis.save()
 
-
         serial = BlockchainSerializer(new_blockchain)
-        content = JSONRenderer().render(serial.data)
-        return JsonResponse(content, status=200)
+        return JsonResponse(serial.data, status=200, safe=False)
     except Exception as error:
         ex = str(error)
         content = {'info': ex}
@@ -58,8 +56,7 @@ def get_blockchain(request):
             all_trans = Transaction.objects.all()
 
             serial = TransactionSerializer(all_trans, many=True)
-            content = JSONRenderer().render(serial.data)
-            return JsonResponse(content, status=200)
+            return JsonResponse(serial.data, status=200, safe=False)
 
         content = {'info': ' no blockchain in DB'}
         return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
@@ -109,8 +106,7 @@ def new_transaction(request):
             new_trans.save()
 
             serial = TransactionSerializer(new_trans)
-            content = JSONRenderer().render(serial.data)
-            return JsonResponse(content, status=200)
+            return JsonResponse(serial.data, status=200, safe=False)
 
         content = {'info': 'no Blockchain started'}
         return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
@@ -126,22 +122,21 @@ def get_all_finished_transactions(request):
         fin_trans = Transaction.objects.filter(open_transactions=None)
         if fin_trans.count() > 0:
             serial = TransactionSerializer(fin_trans, many=True)
-            content = JSONRenderer().render(serial.data)
-            return JsonResponse(content, status=200)
+            return JsonResponse(serial.data, status=200, safe=False)
 
         content = {'info': 'no transactions found'}
         return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
     except Exception as error:
         print(error)
 
+
 @api_view(['GET'])
 def get_open_transactions(request):
     try:
         all_open_trans = Transaction.objects.exclude(open_transactions=None)
         serial = TransactionSerializer(all_open_trans, many=True)
-        content = JSONRenderer().render(serial.data)
 
-        return JsonResponse(content, status=200)
+        return JsonResponse(serial.data, status=200, safe=False)
     except Exception as error:
         ex = str(error)
         content = {'info': ex}
@@ -159,8 +154,7 @@ def mining(request):
             return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
 
         serial = TransactionSerializer(open_trans)
-        content = JSONRenderer().render(serial.data)
-        return JsonResponse(content, status=200)
+        return JsonResponse(serial.data, status=200, safe=False)
     except Exception as error:
         ex = str(error)
         content = {'info': ex}
@@ -180,13 +174,11 @@ def get_block(request):
 
         #deserialize data, get id value
         block_idx = data_dict["block_index"]
-
         block = Block.objects.filter(index=block_idx)
 
         if block.count() > 0:
             serial = BlockSerializer(block)
-            content = JSONRenderer().render(serial.data)
-            return JsonResponse(content, status=200)
+            return JsonResponse(serial.data, status=200, safe=False)
 
         content = {'info': 'no block found'}
         return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
