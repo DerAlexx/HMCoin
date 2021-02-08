@@ -74,6 +74,8 @@ export default class AllAddresses extends React.Component {
                     ))
                 }
                 </ul>
+                <br></br>
+                <br></br>
               </div>
           </div>
       )

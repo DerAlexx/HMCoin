@@ -36,7 +36,8 @@ export default class FSidebar extends React.Component {
                     <ul style={{color:'gray', listStyle: "none", paddingLeft:0}}>
                         <li style={{paddingTop:'10px'}}><Link style={{color:'white'}} to="/">Home</Link></li>
                         <li style={{paddingTop:'10px'}}><Link style={{color:'white'}} to="/send">Send Coins</Link></li>
-                        <li style={{paddingTop:'10px'}}><Link style={{color:'white'}} to="/transactions">All Transactions</Link></li>
+                        <li style={{paddingTop:'10px'}}><Link style={{color:'white'}} to="/transactions">Transactions</Link></li>
+                        <li style={{paddingTop:'10px'}}><Link style={{color:'white'}} to="/opentransactions">Open Transactions</Link></li>
                         <li style={{paddingTop:'10px'}}><Link style={{color:'white'}} to="/#">The Blockchain</Link></li>
                         <li style={{paddingTop:'10px'}}><Link style={{color:'white'}} to="/#">Mining</Link></li>
                         <li style={{paddingTop:'10px'}}><Link style={{color:'white'}} to="/alladdresses">Addressmanagement</Link></li>

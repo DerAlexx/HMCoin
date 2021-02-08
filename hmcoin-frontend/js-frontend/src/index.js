@@ -2,8 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import Transactions from './Transactions';
-import CoinTransaction from './CoinTransaction';
+import Transactions from './services/Transactions';
+import OpenTransactions from './services/opentrans';
+import CoinTransaction from './services/CoinTransaction';
 import reportWebVitals from './reportWebVitals';
 import AllAddresses from './services/addresses'
 import { Route, BrowserRouter as Router } from 'react-router-dom'
@@ -16,7 +17,8 @@ const router = (
   <Router history={browserHistory}>
     <div>
       <Route exact path="/" component={App}  />
-      <Route exact path="/transactions" component={Transactions}  /> 
+      <Route exact path="/transactions" component={Transactions}  />
+      <Route exact path="/opentransactions" component={OpenTransactions}  />
       <Route exact path="/send" component={CoinTransaction}  /> 
       <Route exact path="/alladdresses" component={AllAddresses}  /> 
     </div>

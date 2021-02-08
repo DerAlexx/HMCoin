@@ -5,58 +5,58 @@ import Axios from "axios";
 
 import Menubar from '../component/menubar';
 
-export default class OpenTransactions extends React.Component {
+export default class Transactions extends React.Component {
  
-    OTRANSACTIONSAPI = "http://0.0.0.0:8000/rest/open-transactions/"
+  DTRANSACTIONSAPI = "http://0.0.0.0:8000/rest/done-transactions/"
 
-    state = {
-      otransactions: [],
-    }
+  state = {
+    dtransactions: [],
+  }
 
-    constructor(props) {
-      super(props);
-      this.interval = 0;
-    }
+  constructor(props) {
+    super(props);
+    this.interval = 0;
+  }
 
-    componentWillMount() {
-      try {
-        this.interval = setInterval(async() => {
-          Axios.get(this.OTRANSACTIONSAPI).then(Response => {
-            const chuncks = Response.data
-            console.log(chuncks)
-            this.setState({
-              otransactions: chuncks,
-            })
-          }).catch(errors => {
-            this.setState({
-              otransactions: [],
-            })
+  componentWillMount() {
+    try {
+      this.interval = setInterval(async() => {
+        Axios.get(this.DTRANSACTIONSAPI).then(Response => {
+          const chuncks = Response.data
+          console.log(chuncks)
+          this.setState({
+            dtransactions: chuncks,
           })
-        }, 1000)
-      } catch (exception) {
-        console.log(exception)
-      }
+        }).catch(errors => {
+          this.setState({
+            dtransactions: [],
+          })
+        })
+      }, 1000)
+    } catch (exception) {
+      console.log(exception)
     }
+  }
 
-    componentWillUnmount() {
-      clearInterval(this.interval)
-    }
+  componentWillUnmount() {
+    clearInterval(this.interval)
+  }
 
     render() {
-      const {otransactions} = this.state
+      const {dtransactions} = this.state
       return (       
           <div className="App">
               <Menubar></Menubar>
               <div style={{marginLeft: '10%', width:'80%', top: '120px', position: 'absolute', zIndex:-20}}>
-                <h2 style={{color:'gray'}}>Open transactions</h2>
+                <h2 style={{color:'gray'}}>Done transactions</h2>
                 <hr></hr>
                 {
-                  otransactions < 1 ? 
+                  dtransactions < 1 ? 
                   <div class="alert alert-warning">
                     No transactions
                   </div> 
                   :
-                  otransactions.map(item => (
+                  dtransactions.map(item => (
                           <div class="card">
                             <div class="card-body">
                               #{item.id}, Sender: {item.sender}, Recipient: {item.recipient}, Quantity: {item.quantity}, Reward: {item.reward}
