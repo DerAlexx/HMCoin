@@ -21,7 +21,7 @@ class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
         #fields = ['sender', 'recipient', 'quantity', 'reward', 'block', 'open_transactions']
-        fields = ['sender', 'recipient', 'quantity']
+        fields = ['id', 'sender', 'recipient', 'quantity', 'reward']
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
