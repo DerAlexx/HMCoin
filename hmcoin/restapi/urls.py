@@ -1,9 +1,9 @@
 from django.urls import include, path
 from django.views.decorators.csrf import csrf_exempt  
-from .restservice import get_open_transactions
+from .restservice import get_all_finished_transactions
 
 
 
 urlpatterns = [ 
-    path('get_open_transactions', get_open_transactions, name="all_transactions"),
+    path('dtrans/', get_all_finished_transactions, name="all_transactions"),
 ]

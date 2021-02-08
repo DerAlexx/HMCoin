@@ -2,6 +2,11 @@ from .models import *
 from .serializers import *
 from rest_framework import response, status
 from rest_framework.renderers import JSONRenderer
+
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.renderers import JSONRenderer
+from django.http import HttpResponse, JsonResponse
+
 import json
 
 import hashlib
@@ -101,18 +106,21 @@ def new_transaction(request):
         content = {'info': 'no Blockchain started'}
         return response.Response(content, status=status.HTTP_204_NO_CONTENT)
 
-    
+
+
+@api_view(['GET'])
 def get_all_finished_transactions(request):
-    fin_trans = Transaction.objects.filter(open_transactions=None)
-
-    if fin_trans.count() > 0:
-        serial = TransactionSerializer(fin_trans, many=True)
-        content = JSONRenderer().render(serial.data)
-        return response.Response(content)
-    else:
-        content = {'info': 'no transactions found'}
-        return response.Response(content, status=status.HTTP_204_NO_CONTENT)
-
+    try:
+        fin_trans = Transaction.objects.filter(open_transactions=None)
+        if fin_trans.count() > 0:
+            serial = TransactionSerializer(fin_trans, many=True)
+            content = JSONRenderer().render(serial.data)
+            return JsonResponse(content, status=400)
+        else:
+            content = {'info': 'no transactions found'}
+            return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
+    except Exception as error:
+        print(error)
 
 
 def get_open_transactions(request):
