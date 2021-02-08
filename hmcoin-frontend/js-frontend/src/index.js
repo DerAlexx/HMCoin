@@ -5,6 +5,7 @@ import App from './App';
 import Transactions from './Transactions';
 import CoinTransaction from './CoinTransaction';
 import reportWebVitals from './reportWebVitals';
+import AllAddresses from './services/addresses'
 import { Route, BrowserRouter as Router } from 'react-router-dom'
 
 import {createBrowserHistory} from 'history';
@@ -17,6 +18,7 @@ const router = (
       <Route exact path="/" component={App}  />
       <Route exact path="/transactions" component={Transactions}  /> 
       <Route exact path="/send" component={CoinTransaction}  /> 
+      <Route exact path="/alladdresses" component={AllAddresses}  /> 
     </div>
   </Router>
 )
