@@ -53,7 +53,7 @@ export default class OpenTransactions extends React.Component {
                 {
                   otransactions < 1 ? 
                   <div class="alert alert-warning">
-                    No transactions
+                    No open transactions
                   </div> 
                   :
                   otransactions.map(item => (

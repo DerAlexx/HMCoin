@@ -8,14 +8,19 @@ import Menubar from '../component/menubar';
 export default class AllAddresses extends React.Component {
  
     ADDRESSAPI = "http://0.0.0.0:8000/rest/get-addresses/"
+    NEWADDRESSAPI = "http://0.0.0.0:8000/rest/new-address/"
 
     state = {
       addresses: [],
+      address: "",
     }
 
     constructor(props) {
       super(props);
       this.interval = 0;
+      this.handleChange = this.handleChange.bind(this);
+      this.handleSubmit = this.handleSubmit.bind(this);
+      this.pushAddress = this.pushAddress.bind(this);
     }
 
     componentWillMount() {
@@ -42,12 +47,34 @@ export default class AllAddresses extends React.Component {
       clearInterval(this.interval)
     }
 
-    sendaddress(address) {
+    pushAddress(address) {
+      Axios.post(this.NEWADDRESSAPI,
+          JSON.stringify({
+            url: address})
+        ).then(res => {
+            const response = res.data
 
+        }).catch(response => {
+            this.setState({value: "",})
+      });
+    }
+
+    handleChange(event) {   
+      this.setState(
+        { 
+          address: event.target.value,
+        }
+      ); 
+      console.log(this.state.address)
+    }
+
+    handleSubmit(event) {
+      this.pushAddress(this.state.value)
     }
 
     render() {
-      const {addresses} = this.state
+      const {addresses, address} = this.state
+      console.log(address)
       return (       
           <div className="App">
               <Menubar></Menubar>
@@ -57,7 +84,12 @@ export default class AllAddresses extends React.Component {
                 <h3 style={{color:'#ff5a5a'}} className="float-left">Create a new address</h3>
                 <br></br>
                 <br></br>
-                  Create a new address!
+                  <form onSubmit={this.handleSubmit}>
+                      <p>
+                        <input style={{paddingRight: '65px', paddingTop: '8px', paddingBottom: '8px'}} value={this.state.value} onChange={this.handleChange} name="address" placeholder=""></input>
+                        <button class="btn btn-dark searchbarbutton" style={{marginLeft: '20px', paddingLeft: '40px', paddingRight: '40px'}} type="submit">Add</button>                  
+                      </p>
+                  </form>
                 <hr></hr>
                 <h3 style={{color:'#ff5a5a'}} className="float-left">Taken addresses</h3>
                 <br></br>
