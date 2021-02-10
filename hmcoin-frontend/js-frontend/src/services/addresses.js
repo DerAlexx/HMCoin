@@ -2,6 +2,7 @@
 import 'bootstrap/dist/css/bootstrap.css';
 import React from "react";
 import Axios from "axios";
+import axios from 'axios';
 
 import Menubar from '../component/menubar';
 
@@ -23,7 +24,7 @@ export default class AllAddresses extends React.Component {
       this.pushAddress = this.pushAddress.bind(this);
     }
 
-    componentWillMount() {
+    componentDidMount() {
       try {
         this.interval = setInterval(async() => {
           Axios.get(this.ADDRESSAPI).then(Response => {
@@ -48,14 +49,15 @@ export default class AllAddresses extends React.Component {
     }
 
     pushAddress(address) {
-      Axios.post(this.NEWADDRESSAPI,
+      axios.post(this.NEWADDRESSAPI,
           JSON.stringify({
-            url: address})
+            address: address})
         ).then(res => {
             const response = res.data
-
+            //TODO add messages
         }).catch(response => {
-            this.setState({value: "",})
+          this.setState({value: "",})
+          console.log("Address is not allowed")
       });
     }
 
@@ -69,7 +71,8 @@ export default class AllAddresses extends React.Component {
     }
 
     handleSubmit(event) {
-      this.pushAddress(this.state.value)
+      event.preventDefault();
+      this.pushAddress(this.state.address)
     }
 
     render() {

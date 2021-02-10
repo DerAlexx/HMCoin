@@ -5,6 +5,8 @@ import App from './App';
 import Transactions from './services/Transactions';
 import OpenTransactions from './services/opentrans';
 import CoinTransaction from './services/CoinTransaction';
+import Blockchain from './services/blockchain';
+import Mining from './services/mining';
 import reportWebVitals from './reportWebVitals';
 import AllAddresses from './services/addresses'
 import { Route, BrowserRouter as Router } from 'react-router-dom'
@@ -21,6 +23,8 @@ const router = (
       <Route exact path="/opentransactions" component={OpenTransactions}  />
       <Route exact path="/send" component={CoinTransaction}  /> 
       <Route exact path="/alladdresses" component={AllAddresses}  /> 
+      <Route exact path="/blockchain" component={Blockchain}  />
+      <Route exact path="/mining" component={Mining}  /> 
     </div>
   </Router>
 )
