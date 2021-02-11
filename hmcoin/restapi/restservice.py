@@ -1,6 +1,7 @@
 import json
 import hashlib
 from time import time
+import secrets
 
 from rest_framework import status
 from rest_framework.renderers import JSONRenderer
@@ -100,7 +101,8 @@ def new_transaction(request):
         bc = Blockchain.objects.filter(id=1)
 
         if bc.count() > 0:
-            new_trans = Transaction(sender=sender, recipient=recipient, quantity=quantity, reward=5)
+            proof = secrets.randbelow(200)
+            new_trans = Transaction(sender=sender, recipient=recipient, quantity=quantity, reward=5, proof=proof)
             new_trans.open_transactions = bc.first()
             new_trans.save()
 
@@ -152,7 +154,7 @@ def mining(request):
             content = {'info': 'no open Transactions left to mine'}
             return JsonResponse(content, status=status.HTTP_400_BAD_REQUEST)
 
-        serial = TransactionSerializer(open_trans)
+        serial = TransactionSerializerHash(open_trans)
         return JsonResponse(serial.data, status=200, safe=False)
     except Exception as error:
         ex = str(error)
