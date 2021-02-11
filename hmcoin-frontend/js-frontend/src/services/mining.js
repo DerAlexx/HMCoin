@@ -11,18 +11,35 @@ import Menubar from '../component/menubar';
 export default class Mining extends React.Component {
  
   BLOCKCHAINAPI = "http://0.0.0.0:8000/rest/mining/"
+  VERFIYAPI = "http://0.0.0.0:8000/rest/verfiy/"
 
   state = {
     miningtrans: "",
     number: 0, //number of runs
     tohash: undefined,
-    proofofwork: ""
+    proofofwork: "", 
+    message: ""
   }
 
   constructor(props) {
     super(props);
     this.number = 0;
     this.work = this.work.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick() {
+    axios.post(this.VERFIYAPI,
+      JSON.stringify({
+          transaction_id: this.state.miningtrans.id,
+          runs: this.state.number})
+      ).then(res => {
+          const response = res.data
+          this.setState({message: response,})
+      }).catch(response => {
+        this.setState({message: "Cannot verfiy the number of runs",})
+        console.log("Cannot submit proof of work")
+    });
   }
 
   componentWillMount() {
@@ -87,7 +104,7 @@ export default class Mining extends React.Component {
                 <br></br>
                 3) Pof: {proofofwork}
                 <hr></hr>
-                <button className="btn btn-outline-danger">Send proof-of-work</button>
+                <button onClick={this.handleClick} className="btn btn-outline-danger">Send Proof-of-Work</button>
               </div>
           </div>
       )
