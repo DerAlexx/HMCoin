@@ -11,7 +11,7 @@ class BlockSerializer(serializers.ModelSerializer):
     blockchain = BlockchainSerializer()
     class Meta:
         model = Block
-        fields = ['index', 'proof', 'previous_hash', 'timestamp']
+        fields = ['index', 'previous_hash', 'timestamp']
 
 
 class TransactionSerializer(serializers.ModelSerializer):
@@ -27,3 +27,7 @@ class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Addressbook
         fields = ['address']
+
+class TransactionSerializerHash(serializers.ModelSerializer):
+    class Meta:
+        fields: []

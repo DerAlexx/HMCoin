@@ -17,7 +17,7 @@ class Block(models.Model):
     blockchain = models.ForeignKey(Blockchain, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.index) + ", proof: " + str(self.proof) + ", prev_hash: " + self.previous_hash + ", timestamp: " + str(self.timestamp)
+        return str(self.index) + ", prev_hash: " + self.previous_hash + ", timestamp: " + str(self.timestamp)
 
 class Transaction(models.Model):
     sender = models.CharField(max_length=250)

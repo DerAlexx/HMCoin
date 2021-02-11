@@ -14,13 +14,12 @@ TRANSACTION_IN_A_BLOCK = 8
 
 def get_hash(block, transactions):
     index = block.index
-    proof = block.proof
     prev_hash = block.previous_hash
     timestamp = block.timestamp
     transactions = Transaction.objects.filter(block__index=index)
     serial_trans = TransactionSerializer(transactions, many=True)
 
-    block_to_hash = "{}{}{}{}{}".format(index, proof, prev_hash, timestamp, serial_trans.data.__str__)
+    block_to_hash = "{}{}{}{}{}".format(index, prev_hash, timestamp, serial_trans.data.__str__)
     return hashlib.sha256(block_to_hash.encode()).hexdigest()
 
 @api_view(['GET'])
