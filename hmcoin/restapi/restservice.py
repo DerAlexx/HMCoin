@@ -192,7 +192,7 @@ def get_block(request):
 '''
 erwartet: {
     'transaction_id': int,
-    'proof': int
+    'runs': int
 }
 '''
 @api_view(['POST'])
@@ -202,16 +202,22 @@ def verify(request):
         data_dict = json.loads(data)
         # get transaction-data and found proof
         trans_id = data_dict["transaction_id"]
-        new_proof = data_dict["proof"]
+        nr_of_runs = data_dict["runs"]
 
         # check stuff. ggf trans_to_verify und last block nach hier oben ziehen
-        valid = True
+        trans_to_verify = Transaction.objects.get(id=trans_id)
+
+        str_to_hash = str(trans_id + trans_to_verify.proof) + trans_to_verify.sender
+        for i in range(nr_of_runs):
+            str_to_hash = hashlib.sha256(str_to_hash.encode()).hexdigest()
+
+        valid = str_to_hash[:2] == "11"
 
         if valid:
-            trans_to_verify = Transaction.objects.filter(id=trans_id)
+            
             if trans_to_verify.count() > 0:
                 last_block = Block.objects.order_by('index').first()
-                trans = trans_to_verify.first()
+                trans = trans_to_verify
 
                 # get nr of transactions in block
                 last_block_transactions = Transaction.objects.filter(block__index=last_block.index)
@@ -220,7 +226,7 @@ def verify(request):
                     #add transaction to block
                     trans.block = last_block
                     trans.open_transactions = None
-                    trans.proof = new_proof
+                    trans.proof = nr_of_runs
                     trans.save()
 
                     content = {'info': 'ok'}
@@ -234,7 +240,7 @@ def verify(request):
 
                 trans.block = new_block
                 trans.open_transactions = None
-                trans.proof = new_proof
+                trans.proof = nr_of_runs
                 trans.save()
 
                 content = {'info': 'ok'}
