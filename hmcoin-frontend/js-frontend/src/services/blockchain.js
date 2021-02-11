@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import React from "react";
 import Axios from "axios";
 
+import ResetButton from "../component/resetbutton"
 import Menubar from '../component/menubar';
 
 export default class Blockchain extends React.Component {
@@ -50,10 +51,12 @@ export default class Blockchain extends React.Component {
               <div style={{marginLeft: '10%', width:'80%', top: '120px', position: 'absolute', zIndex:-20}}>
                 <h2 style={{color:'gray'}}>The current Blockchain</h2>
                 <hr></hr>
+                <ResetButton></ResetButton>
+                <hr></hr>
                 {
                   transactions < 1 ? 
                   <div class="alert alert-warning">
-                    No open transactions
+                    No transactions
                   </div> 
                   :
                   transactions.map(item => (
