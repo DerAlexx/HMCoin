@@ -12,7 +12,6 @@ class Blockchain(models.Model):
 
 class Block(models.Model):
     index = models.IntegerField()
-    proof = models.IntegerField()
     previous_hash = models.CharField(max_length=250)
     timestamp = models.IntegerField()
     blockchain = models.ForeignKey(Blockchain, on_delete=models.CASCADE)
@@ -25,6 +24,7 @@ class Transaction(models.Model):
     recipient = models.CharField(max_length=250)
     quantity = models.FloatField()
     reward = models.IntegerField()
+    proof = models.IntegerField()
     block = models.ForeignKey(Block, on_delete=models.CASCADE, null=True, blank=True)
     open_transactions = models.ForeignKey(Blockchain, on_delete=models.CASCADE, null=True, blank=True)
 

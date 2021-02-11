@@ -23,7 +23,7 @@ def get_hash(block, transactions):
     block_to_hash = "{}{}{}{}{}".format(index, proof, prev_hash, timestamp, serial_trans.data.__str__)
     return hashlib.sha256(block_to_hash.encode()).hexdigest()
 
-@api_view(['POST'])
+@api_view(['GET'])
 def start_blockchain(request):
     try:
         blockchain = Blockchain.objects.filter(pk=1)
