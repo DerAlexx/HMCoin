@@ -36,11 +36,11 @@ def start_blockchain(request):
 
         # create genesis-block and connect with BC
         timest = time()
-        genesis = Block(index=0, proof=0, previous_hash="0", timestamp=timest, blockchain=new_blockchain)
+        genesis = Block(index=0, previous_hash="0", timestamp=timest, blockchain=new_blockchain)
         genesis.save()
 
-        serial = BlockchainSerializer(new_blockchain)
-        return JsonResponse(serial.data, status=200, safe=False)
+        content = {'info': 'Blockchain reseted'}
+        return JsonResponse(content, status=200)
     except Exception as error:
         ex = str(error)
         content = {'info': ex}
