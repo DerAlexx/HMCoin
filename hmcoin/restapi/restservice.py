@@ -58,7 +58,7 @@ def get_blockchain(request):
             return JsonResponse(serial.data, status=200, safe=False)
 
         content = {'info': ' no blockchain in DB'}
-        return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
+        return JsonResponse(content, status=status.HTTP_400_BAD_REQUEST)
     except Exception as error:
         ex = str(error)
         content = {'info': ex}
@@ -85,17 +85,17 @@ def new_transaction(request):
         # check if sender and recipient are in adressbook
         if quantity < 0:
             content = {'info': 'quantity less than zero'}
-            return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
+            return JsonResponse(content, status=status.HTTP_400_BAD_REQUEST)
 
         check = Addressbook.objects.filter(address=sender)
         if check.count() <= 0:
             content = {'info': 'sender wrong'}
-            return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
+            return JsonResponse(content, status=status.HTTP_400_BAD_REQUEST)
 
         check = Addressbook.objects.filter(address=recipient)
         if check.count() <= 0:
             content = {'info': 'recipient wrong'}
-            return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
+            return JsonResponse(content, status=status.HTTP_400_BAD_REQUEST)
 
         bc = Blockchain.objects.filter(id=1)
 
@@ -108,7 +108,7 @@ def new_transaction(request):
             return JsonResponse(content, status=200, safe=False)
 
         content = {'info': 'no Blockchain started'}
-        return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
+        return JsonResponse(content, status=status.HTTP_400_BAD_REQUEST)
     except Exception as error:
         ex = str(error)
         content = {'info': ex}
@@ -124,7 +124,7 @@ def get_all_finished_transactions(request):
             return JsonResponse(serial.data, status=200, safe=False)
 
         content = {'info': 'no transactions found'}
-        return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
+        return JsonResponse(content, status=status.HTTP_400_BAD_REQUEST)
     except Exception as error:
         print(error)
 
@@ -150,7 +150,7 @@ def mining(request):
 
         if open_trans == None:
             content = {'info': 'no open Transactions left to mine'}
-            return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
+            return JsonResponse(content, status=status.HTTP_400_BAD_REQUEST)
 
         serial = TransactionSerializer(open_trans)
         return JsonResponse(serial.data, status=200, safe=False)
@@ -180,7 +180,7 @@ def get_block(request):
             return JsonResponse(serial.data, status=200, safe=False)
 
         content = {'info': 'no block found'}
-        return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
+        return JsonResponse(content, status=status.HTTP_400_BAD_REQUEST)
     except Exception as error:
         ex = str(error)
         content = {'info': ex}
@@ -240,10 +240,10 @@ def verify(request):
 
             else:
                 content = {'info': 'no transaction found'}
-                return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
+                return JsonResponse(content, status=status.HTTP_400_BAD_REQUEST)
         else:
             content = {'info': 'was not valid'}
-            return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
+            return JsonResponse(content, status=status.HTTP_400_BAD_REQUEST)
     except Exception as error:
         ex = str(error)
         content = {'info': ex}
