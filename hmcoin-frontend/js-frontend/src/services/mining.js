@@ -14,9 +14,9 @@ export default class Mining extends React.Component {
 
   state = {
     miningtrans: "",
-    miningtrans_original: "",
-    number: 0,
-    tohash: undefined
+    number: 0, //number of runs
+    tohash: undefined,
+    proofofwork: ""
   }
 
   constructor(props) {
@@ -25,33 +25,41 @@ export default class Mining extends React.Component {
     this.work = this.work.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     Axios.get(this.BLOCKCHAINAPI).then(Response => {
       const chuncks = Response.data
       this.setState({
         miningtrans: chuncks,
+        number: this.work(chuncks)[0],
+        tohash: chuncks.id + chuncks.proof + chuncks.sender,
+        proofofwork: this.work(chuncks)[1]
       })
-      this.work(chuncks)
     }).catch(errors => {
       this.setState({
         miningtrans: "",
       })
     })
-    
   }
 
   //miningtrans.id + num + miningtrans.sender
   work(miningtrans) {
-    var tohash = miningtrans.id + miningtrans.proof + miningtrans.sender
-    var hash = sha256(tohash)
+    var hash = sha256(miningtrans.id + miningtrans.proof + miningtrans.sender)
     var number_of_runs = 0
     do {
       number_of_runs++
+      hash = sha256(hash).toString()
+      console.log(hash, number_of_runs)
     } while(!hash.startsWith("11"))
+    console.log(number_of_runs)
+    // this.state({
+    //   tohash: miningtrans.id + miningtrans.proof + miningtrans.sender,
+    //   number: number_of_runs
+    // })
+    return [number_of_runs, hash]
   }
 
   render() {
-      const {miningtrans, number, tohash} = this.state
+      var {miningtrans, number, tohash, proofofwork} = this.state
       return (       
           <div className="App">
               <Menubar></Menubar>
@@ -71,15 +79,15 @@ export default class Mining extends React.Component {
                   </div>
                 }
                 <hr></hr>
-                1) Getting a secret: {number}
+                1) The value to hash: {tohash} 
                 <br></br>
                 <br></br>
-                2) The value to hash: {tohash}
+                2) Number of runs: {number}
                 <br></br>
                 <br></br>
-                3) The hash:
+                3) Pof: {proofofwork}
                 <hr></hr>
-                <button>Send hash</button>
+                <button className="btn btn-outline-danger">Send proof-of-work</button>
               </div>
           </div>
       )
