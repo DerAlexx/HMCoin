@@ -20,7 +20,7 @@ def get_hash(block, transactions):
     transactions = Transaction.objects.filter(block__index=index)
     serial_trans = TransactionSerializerHash(transactions, many=True)
 
-    block_to_hash = "{}{}{}{}{}".format(index, prev_hash, timestamp, serial_trans.data.__str__)
+    block_to_hash = "{}{}{}{}".format(index, prev_hash, timestamp, serial_trans.data.__str__)
     return hashlib.sha256(block_to_hash.encode()).hexdigest()
 
 @api_view(['GET'])
@@ -208,21 +208,22 @@ def verify(request):
         trans_to_verify = Transaction.objects.get(id=trans_id)
 
         str_to_hash = str(trans_id + trans_to_verify.proof) + trans_to_verify.sender
-        for i in range(nr_of_runs):
+        print(str_to_hash)
+        for i in range(1, nr_of_runs+1):
             str_to_hash = hashlib.sha256(str_to_hash.encode()).hexdigest()
-
+            print(str_to_hash)
         valid = str_to_hash[:2] == "11"
 
         if valid:
             
-            if trans_to_verify.count() > 0:
+            if trans_to_verify is not None:
                 last_block = Block.objects.order_by('index').first()
                 trans = trans_to_verify
 
                 # get nr of transactions in block
                 last_block_transactions = Transaction.objects.filter(block__index=last_block.index)
                 count_trans_in_block = last_block_transactions.count()
-                if last_block.index != 0 and (count_trans_in_block is not None or count_trans_in_block < TRANSACTION_IN_A_BLOCK):
+                if last_block.index != 0 and (count_trans_in_block is not None and count_trans_in_block < TRANSACTION_IN_A_BLOCK):
                     #add transaction to block
                     trans.block = last_block
                     trans.open_transactions = None

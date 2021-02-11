@@ -4,14 +4,15 @@ import React from "react";
 import Axios from "axios";
 import axios from 'axios';
 
-import sha256 from 'crypto-js/sha256';
+import SHA256 from 'crypto-js/sha256';
+import Hex from 'crypto-js/enc-hex';
 
 import Menubar from '../component/menubar';
 
 export default class Mining extends React.Component {
  
   BLOCKCHAINAPI = "http://0.0.0.0:8000/rest/mining/"
-  VERFIYAPI = "http://0.0.0.0:8000/rest/verfiy/"
+  VERFIYAPI = "http://0.0.0.0:8000/rest/verify/"
 
   state = {
     miningtrans: "",
@@ -35,7 +36,7 @@ export default class Mining extends React.Component {
           runs: this.state.number})
       ).then(res => {
           const response = res.data
-          this.setState({message: response,})
+          this.setState({message: response.info,})
       }).catch(response => {
         this.setState({message: "Cannot verfiy the number of runs",})
         console.log("Cannot submit proof of work")
@@ -60,28 +61,32 @@ export default class Mining extends React.Component {
 
   //miningtrans.id + num + miningtrans.sender
   work(miningtrans) {
-    var hash = sha256(miningtrans.id + miningtrans.proof + miningtrans.sender)
-    var number_of_runs = 0
+    var hash = SHA256(miningtrans.id + miningtrans.proof + miningtrans.sender).toString(Hex)
+    var number_of_runs = 1
     do {
+      console.log(number_of_runs, hash)
       number_of_runs++
-      hash = sha256(hash).toString()
-      console.log(hash, number_of_runs)
+      hash = SHA256(hash).toString(Hex)
     } while(!hash.startsWith("11"))
-    console.log(number_of_runs)
-    // this.state({
-    //   tohash: miningtrans.id + miningtrans.proof + miningtrans.sender,
-    //   number: number_of_runs
-    // })
+    console.log(number_of_runs, hash)
     return [number_of_runs, hash]
   }
 
   render() {
-      var {miningtrans, number, tohash, proofofwork} = this.state
+      var {miningtrans, number, tohash, proofofwork, message} = this.state
       return (       
           <div className="App">
               <Menubar></Menubar>
               <div style={{marginLeft: '10%', width:'80%', top: '120px', position: 'absolute', zIndex:-20}}>
                 <h2 style={{color:'gray'}}>Mining</h2>
+                {message ? 
+                  <p>
+                    <hr></hr>
+                    <div class="alert alert-secondary">
+                      {message}
+                    </div> 
+                  </p>
+                  : undefined}
                 <hr></hr>
                 {
                   miningtrans < 1 ? 

@@ -77,7 +77,6 @@ export default class AllAddresses extends React.Component {
 
     render() {
       const {addresses, address} = this.state
-      console.log(address)
       return (       
           <div className="App">
               <Menubar></Menubar>
