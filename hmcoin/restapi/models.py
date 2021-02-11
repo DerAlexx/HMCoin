@@ -24,7 +24,7 @@ class Transaction(models.Model):
     recipient = models.CharField(max_length=250)
     quantity = models.FloatField()
     reward = models.IntegerField()
-    proof = models.IntegerField()
+    proof = models.IntegerField(null=True)
     block = models.ForeignKey(Block, on_delete=models.CASCADE, null=True, blank=True)
     open_transactions = models.ForeignKey(Blockchain, on_delete=models.CASCADE, null=True, blank=True)
 

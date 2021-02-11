@@ -30,4 +30,5 @@ class AddressSerializer(serializers.ModelSerializer):
 
 class TransactionSerializerHash(serializers.ModelSerializer):
     class Meta:
-        fields: []
+        model = Transaction
+        fields: ['id', 'sender', 'recipient', 'quantity', 'reward', 'proof']

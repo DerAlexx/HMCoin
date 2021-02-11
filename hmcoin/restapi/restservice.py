@@ -17,7 +17,7 @@ def get_hash(block, transactions):
     prev_hash = block.previous_hash
     timestamp = block.timestamp
     transactions = Transaction.objects.filter(block__index=index)
-    serial_trans = TransactionSerializer(transactions, many=True)
+    serial_trans = TransactionSerializerHash(transactions, many=True)
 
     block_to_hash = "{}{}{}{}{}".format(index, prev_hash, timestamp, serial_trans.data.__str__)
     return hashlib.sha256(block_to_hash.encode()).hexdigest()
@@ -200,7 +200,7 @@ def verify(request):
         data_dict = json.loads(data)
         # get transaction-data and found proof
         trans_id = data_dict["transaction_id"]
-        proof = data_dict["proof"]
+        new_proof = data_dict["proof"]
 
         # check stuff. ggf trans_to_verify und last block nach hier oben ziehen
         valid = True
@@ -218,6 +218,7 @@ def verify(request):
                     #add transaction to block
                     trans.block = last_block
                     trans.open_transactions = None
+                    trans.proof = new_proof
                     trans.save()
 
                     content = {'info': 'ok'}
@@ -226,11 +227,12 @@ def verify(request):
                 #create block, as only genesis is there or transaction_max is reached
                 #define hash func above
                 prev_hash = get_hash(last_block, last_block_transactions)
-                new_block = Block(index=(last_block.index + 1), proof=proof, previous_hash=prev_hash, timestamp=time(), blockchain=last_block.blockchain)
+                new_block = Block(index=(last_block.index + 1), previous_hash=prev_hash, timestamp=time(), blockchain=last_block.blockchain)
                 new_block.save()
 
                 trans.block = new_block
                 trans.open_transactions = None
+                trans.proof = new_proof
                 trans.save()
 
                 content = {'info': 'ok'}
