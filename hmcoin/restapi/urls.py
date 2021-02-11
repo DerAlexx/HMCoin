@@ -19,7 +19,7 @@ urlpatterns = [
     path('get-addresses/', get_addresses, name="get-address"),
     path('new-address/', add_address, name="new-address"),
     path('mining/', mining, name="mining"),
-    path('verfiy/', verify, name="verify"),
+    path('verify/', verify, name="verify"),
     path('blockchain/', get_blockchain, name="get_blockchain"),
     path('reset/', start_blockchain, name="reset"),
 ]
