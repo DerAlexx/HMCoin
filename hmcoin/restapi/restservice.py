@@ -104,8 +104,8 @@ def new_transaction(request):
             new_trans.open_transactions = bc.first()
             new_trans.save()
 
-            serial = TransactionSerializer(new_trans)
-            return JsonResponse(serial.data, status=200, safe=False)
+            content = {'info': 'ok'}
+            return JsonResponse(content, status=200, safe=False)
 
         content = {'info': 'no Blockchain started'}
         return JsonResponse(content, status=status.HTTP_204_NO_CONTENT)
