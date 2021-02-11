@@ -107,7 +107,7 @@ export default class Mining extends React.Component {
                 2) Number of runs: {number}
                 <br></br>
                 <br></br>
-                3) Pof: {proofofwork}
+                3) PoW: {proofofwork}
                 <hr></hr>
                 <button onClick={this.handleClick} className="btn btn-outline-danger">Send Proof-of-Work</button>
               </div>

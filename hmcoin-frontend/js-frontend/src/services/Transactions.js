@@ -57,7 +57,7 @@ export default class Transactions extends React.Component {
                   </div> 
                   :
                   dtransactions.map(item => (
-                          <div class="card">
+                          <div class="card" style={{marginBottom: '20px'}}>
                             <div class="card-body">
                               #{item.id}, Sender: {item.sender}, Recipient: {item.recipient}, Quantity: {item.quantity}, Reward: {item.reward}
                             </div>

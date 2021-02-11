@@ -76,18 +76,18 @@ export default class CoinTransaction extends React.Component {
                   <form onSubmit={this.handleSubmit}>
                       <p>
                         <label for="sender">Senderaddress</label><br></br>
-                        <input style={{width:'100%', height: '40px'}} value={this.state.value} onChange={this.handleChange} name="sender" placeholder="sender"></input>
+                        <input style={{width:'100%', height: '40px'}} value={this.state.value} onChange={this.handleChange} name="sender" placeholder="Sender"></input>
                         <br></br>
                         <br></br>
                         <label for="recipient">Recipientaddress</label><br></br>
-                        <input style={{width:'100%', height: '40px'}} value={this.state.value} onChange={this.handleChange} name="recipient" placeholder="recipient"></input>
+                        <input style={{width:'100%', height: '40px'}} value={this.state.value} onChange={this.handleChange} name="recipient" placeholder="Recipient"></input>
                         <br></br>
                         <br></br>
-                        <label for="amount">Amount</label><br></br>
+                        <label for="amount">Amount of coins</label><br></br>
                         <input style={{width:'100%', height: '40px'}} value={this.state.value} onChange={this.handleChange} name="amount" placeholder="Coins"></input>
                         <br></br>
                         <br></br>
-                        <button class="btn btn-dark searchbarbutton" style={{marginLeft: '20px', paddingLeft: '40px', paddingRight: '40px'}} type="submit">Transfer coins</button>                  
+                        <button class="btn btn-dark searchbarbutton" style={{marginLeft: '20px', paddingLeft: '40px', paddingRight: '40px'}} type="submit">Transfer HMCoins</button>                  
                       </p>
                   </form>
               </div>
